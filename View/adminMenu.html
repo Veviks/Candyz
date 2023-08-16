@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Menu Page</title>
+    <!-- font awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <style>
+        table, th, td {
+          border:1px solid black;
+          font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+          font-size: large;
+        }
+    </style>
+        
+
+    <!-- swiper -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/swiper@7/swiper-bundle.min.css"
+    />
+    <!-- lightgallery -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery-js/1.4.0/css/lightgallery.min.css"
+    />
+    <script src="https://kit.fontawesome.com/51237677f5.js" crossorigin="anonymous"></script>
+    <!-- custom css -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script src="/js/script.js"></script>
+</head>
+<body>
+    <section class="header">
+        <a href="/adminMenu" class="logo">
+            <i class="fa-solid fa-candy-cane fa-flip-horizontal" style="color: #ffffff;"></i> Candyz
+        </a>
+
+        <nav class="navbar">
+            <a href="/adminMenu">Menu</a>
+                <a href="/adminMenu/iceCreams">Candyz Menu</a>
+                <a href="/adminMenu/gelaterias">Candyz Shops</a>
+                <a href="/adminMenu/Stats">Stats Menu</a>
+                <a href="/logout">Log-Out</a>
+
+        </nav>
+
+        <div id="menu-btn" class="fas fa-bars"></div>
+    </section>
+    <section>
+        <h1  class="heading">Users List</h1>
+        <div id="users">
+        <br>
+        <table id="userstable" style="width:100%; text-align: center;">
+            <tr>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Admin</th>
+            </tr>
+          </table>
+        </div>
+    </section>
+    <!-- footer -->
+
+		<section class="footer">
+			<div class="icons-container">
+				<div class="icons">
+					<i class="fas fa-map"></i>
+					<h3>address</h3>
+						<p>
+							Elie Wiesel St 2, Rishon LeTsiyon,  Israel
+						</p>
+				</div>
+
+				<div class="icons">
+					<i class="fas fa-phone"></i>
+					<h3>phone</h3>
+					<p>03-333-3333</p>
+					<p>07-777-7777</p>
+				</div>
+
+				<div class="icons">
+					<i class="fas fa-clock"></i>
+					<h3>opening hours</h3>
+					<p>
+						Sunday - Thursday : 9:00 - 22:00 <br />
+						Friday: 9:00 - 11:00
+					</p>
+				</div>
+			</div>
+
+		</section>
+
+		<!-- footer -->
+    <script>   
+	$.get('/showData',function(data,status){
+		for (let i=0; i< data.length; i++){
+			if (data[i].admin === true){
+				var row = "<tr>"
+				+"<td style='color:blue'>" + data[i].fullname + "</td>"
+				+"<td style='color:blue'>" + data[i].email + "</td>"
+				+"<td style='color:blue'>" + data[i].admin + "</td>"
+				+"</tr>";
+				$("#userstable").append(row);
+			}
+			else {
+					var row = "<tr>"
+					+"<td>" + data[i].fullname + "</td>"
+					+"<td>" + data[i].email + "</td>"
+					+"<td>" + data[i].admin + "</td>"
+					+"</tr>";
+					$("#userstable").append(row);
+				}
+			}
+		});
+
+    </script>
+</body>
+</html>
