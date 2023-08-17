@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Menu Page</title>
+    <!-- font awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <style>
+        table, th, td {
+          border:1px solid black;
+          font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+          font-size: large;
+        }
+    </style>
+        
+
+    <!-- swiper -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/swiper@7/swiper-bundle.min.css"
+    />
+    <!-- lightgallery -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery-js/1.4.0/css/lightgallery.min.css"
+    />
+    <!-- custom css -->
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://kit.fontawesome.com/51237677f5.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP9dYPVf2u0doyObPdfPOYK-ecHUni8-8&callback=initMap&v=weekly" async defer></script>
+    <script src="js/script.js"></script>
+    
+
+   
+</script>
+
+</head>
+<body>
+    <section class="header">
+        <a href="index.html" class="logo">
+            <i class="fa-solid fa-candy-cane fa-flip-horizontal" style="color: #ffffff;"></i> Candyz
+        </a>
+
+        <nav class="navbar">
+            <a href="index.html">Home</a>
+            <a href="signUp.html">sign up</a>
+            <a href="signIn.html">sign in</a>
+            <a href="chat.html">Chat</a>
+        </nav>
+
+        <div id="menu-btn" class="fas fa-bars"></div>
+    </section>
+    <style>
+        /* 
+        * Always set the map height explicitly to define the size of the div element
+        * that contains the map. 
+        */
+        #map {
+        height: 100%;
+        }
+
+        /* 
+        * Optional: Makes the sample page fill the window. 
+        */
+        html,
+        body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        }
+        #map1{
+            height: 80%;
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="map1"></div>
+    <script>
+        let map;
+        let center = [];
+        // This function is the callback function for the Google Maps API. When the Google Maps API is initialized, it calls this function
+            function initMap() {
+            $.get('/showGel',(data,status)=>{
+            for (let i=0; i<data.length; i++){
+                const item = {
+                    lat: data[i].latitude,
+                    lng: data[i].longitude
+                }
+                center.push(item);
+            }
+            console.log(center);
+            let maps = [];
+            let markers = [];
+            let infoWindows = [];
+            map = new google.maps.Map(document.getElementById("map1"), {
+                    center : center[0],
+                    zoom: 10,
+            });
+            for(let i =0; i < center.length; i++){
+                let number = i;
+                let newNumber = i+1;
+                const labelStr = newNumber.toString();
+                const marker = new google.maps.Marker({
+                    position: center[i],
+                    map:map,
+                    label: labelStr,
+                    draggable: false,
+                    animation: google.maps.Animation.DROP
+                });
+                let infoWindow = new google.maps.InfoWindow({
+                    content: "<p><b>" + data[i].address + "</b></p>"
+                })
+                infoWindow.open(map,marker);
+            }
+        });
+        window.initMap = initMap;
+    }
+    </script>
+    <!-- footer -->
+
+		<section class="footer">
+			<div class="icons-container">
+				<div class="icons">
+					<i class="fas fa-map"></i>
+					<h3>address</h3>
+						<p>
+							Elie Wiesel St 2, Rishon LeTsiyon,  Israel
+						</p>
+				</div>
+
+				<div class="icons">
+					<i class="fas fa-phone"></i>
+					<h3>phone</h3>
+					<p>03-333-3333</p>
+					<p>07-777-7777</p>
+				</div>
+
+				<div class="icons">
+					<i class="fas fa-clock"></i>
+					<h3>opening hours</h3>
+					<p>
+						Sunday - Thursday : 9:00 - 22:00 <br />
+						Friday: 9:00 - 11:00
+					</p>
+				</div>
+			</div>
+
+		</section>
+
+		<!-- footer -->
+  </body>
+</html>
