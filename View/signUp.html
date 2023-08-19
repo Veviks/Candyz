@@ -38,25 +38,78 @@
 				
 				<div class="box-container">
 					<div class="box">
-						<div class="inputBox">
+						<!-- <div class="inputBox">
 							<span>Full-Name</span>
 							<input type="text" required name="fullname" id="signUpFullName"  placeholder="enter your full-name" />
-						</div>
-
+						</div> -->
 						<div class="inputBox">
+							<span>Full-Name</span>
+							<input type="text"  name="fullname" id="signUpFullName" placeholder="enter your full-name" />
+							<div id="fullnameAlert" class="alert" style="display: none; color: red; font-size: larger; margin-top: 5px;">Please enter a valid full name.</div>
+						</div>
+					
+						<!-- <div class="inputBox">
 							<span>email</span>
 							<input type="email" required name="email" id="signUpEmail" required placeholder="enter your email" />
+						</div> -->
+						<div class="inputBox">
+							<span>email</span>
+							<input type="email" name="email" id="signUpEmail"  placeholder="enter your email" />
+							<div id="emailAlert" class="alert" style="display: none; color: red; font-size: larger ">Please enter a valid email address.</div>
 						</div>
-
+						<!-- <div class="inputBox">
+							<span>password</span>
+							<input type="password" id="passwordSignUp" name="password" placeholder="enter your password" />
+						</div> -->
 						<div class="inputBox">
 							<span>password</span>
-							<input type="password" required id="passwordSignUp" name="password" placeholder="enter your password" />
+							<input type="password" id="passwordSignUp" name="password" placeholder="enter your password" />
+							<div id="passwordAlert" class="alert"  style="display: none; color: red; font-size: larger " >Please enter a valid password (6-12 characters).</div>
 						</div>
 					</div>
 				</div>
 				<input type="submit" value="sign up" class="btn"/>
 			</form>
 			<div id="errorMessages"></div>
+			<script>
+				document.querySelector('form').addEventListener('submit', function(event) {
+					const fullnameInput = document.querySelector('input[name="fullname"]');
+					const fullnameAlert = document.getElementById('fullnameAlert');
+			
+					if (!/^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/.test(fullnameInput.value)) {
+						fullnameAlert.style.display = 'block';
+						event.preventDefault(); // Prevent the form from submitting
+					} else {
+						fullnameAlert.style.display = 'none';
+					}
+				});
+			</script>
+			<script>
+				document.querySelector('form').addEventListener('submit', function(event) {
+					const emailInput = document.querySelector('input[name="email"]');
+					const emailAlert = document.getElementById('emailAlert');
+			
+					if (!emailInput.value.includes("@") || !emailInput.value.includes(".")) {
+						emailAlert.style.display = 'block';
+						event.preventDefault(); // Prevent the form from submitting
+					} else {
+						emailAlert.style.display = 'none';
+					}
+				});
+			</script>
+			<script>
+				document.querySelector('form').addEventListener('submit', function(event) {
+					const passwordInput = document.querySelector('input[name="password"]');
+					const passwordAlert = document.getElementById('passwordAlert');
+			
+					if (passwordInput.value.length < 6 || passwordInput.value.length > 12) {
+						passwordAlert.style.display = 'block';
+						//event.preventDefault(); // Prevent the form from submitting
+					} else {
+						passwordAlert.style.display = 'none';
+					}
+				});
+			</script>
 			<script> //displaying the errors
 				$(document).ready(function() {
 					// Show error messages

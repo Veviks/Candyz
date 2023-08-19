@@ -54,7 +54,9 @@ async function setNewUsser(req,res){
             console.log("Password invalid");
         }
         console.log("User was not created");
-		res.redirect("/signup");
+		setTimeout(() => {
+            return res.redirect("/signup");
+        }, 2000);
         //res.render("signup", { errorsArr });
     }
     
