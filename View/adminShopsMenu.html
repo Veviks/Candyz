@@ -47,7 +47,7 @@
         <nav class="navbar">
             <nav class="navbar">
                 <a href="/adminMenu">Menu</a>
-                <a href="/adminMenu/iceCreams">Candyz Menu</a>
+                <a href="/adminMenu/Candys">Candyz Menu</a>
                 <a href="/googleMaps">Candyz Shops</a>
                 <a href="/adminMenu/Stats">Stats Menu</a>
                 <a href="/logout">Log-Out</a>
@@ -58,8 +58,8 @@
     </section>
     <section>
         <h1 class="heading">Candyz Shops</h1>
-        <div id="iceCreams1" class="box-container">
-            <table id="gelateriasTable1" style="width:100%; text-align: center;" >
+        <div id="Candys1" class="box-container">
+            <table id="CandyzTable1" style="width:100%; text-align: center;" >
                 <tr>
                     <th>Address</th>
                     <th>Latitude</th>
@@ -71,12 +71,13 @@
     </section>
     <section class="sign" id="sign">
         <h1 class="heading">Add Shop</h1>
-        <form action="/addGelateria" method="POST">
+        <form action="/addShops" method="POST">
             <div class="box-container">
                 <div class="box">
                     <div class="inputBox">
+                        <div id="addressAlert" class="alert" style="display: none;">Please enter an address.</div>
                         <span>Address</span>
-                        <input type="text" name="address"  placeholder="enter address" />
+                        <input type="text" name="address" placeholder="enter address" />
                         <span>Latitude</span>
                         <input type="text" name="lat"  placeholder="enter Latitude" />
                         <span>Longitude</span>
@@ -93,7 +94,7 @@
     </section>
     <section class="sign" id="sign">
         <h1 class="heading">Update Shop</h1>
-        <form action="/updateGelateria" method="POST">
+        <form action="/updateShops" method="POST">
             <div class="box-container">
                 <div class="box">
                 <div class="inputBox">
@@ -110,7 +111,7 @@
     
     <section class="sign" id="sign">
         <h1 class="heading">Delete Shop</h1>
-        <form action="/deleteGelateria" method="POST">
+        <form action="/deleteShops" method="POST">
             <div class="box-container">
                 <div class="box">
                 <div class="inputBox">
@@ -153,7 +154,7 @@
 
 		<!-- footer -->
     <script>
-        $.get('/showGelaterias',function(data,status){
+        $.get('/showShops',function(data,status){
 		for (let i=0; i< data.length; i++){
 				var row = "<tr>"
 				+"<td>"  + data[i].address + "</td>"
@@ -161,8 +162,21 @@
                 +"<td>"  + data[i].longitude + "</td>"
                 +"<td><img style='width:130px'; src='" + data[i].photoURL + "'></td>"
 				+"</tr>";
-				$("#gelateriasTable1").append(row);
+				$("#CandyzTable1").append(row);
 			}
+        });
+    </script>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const addressInput = document.querySelector('input[name="address"]');
+            const addressAlert = document.getElementById('addressAlert');
+    
+            if (!addressInput.value) {
+                addressAlert.style.display = 'block';
+                event.preventDefault(); // Prevent the form from submitting
+            } else {
+                addressAlert.style.display = 'none';
+            }
         });
     </script>
 </body>

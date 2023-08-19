@@ -1,4 +1,4 @@
-const IceCream = require("../Backend/models/IceCream");
+const Candy = require("../Backend/models/Candy");
 const path = require('path');
 //----------------Search page-----------------------//
 function getUserMenuPage(req, res) {
@@ -13,7 +13,7 @@ async function getSearchResPage(req, res) {
     
     console.log("name is: " + name);
     
-    const productName = await IceCream.findOne({"name": name});
+    const productName = await Candy.findOne({"name": name});
     if(!productName){
         console.log("product not found");
         return res.redirect("/wrongProduct");

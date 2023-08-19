@@ -5,13 +5,13 @@ const http = require('http');
 const socketio = require('socket.io')
 const formatMessage = require('./View/js/utils/messages');
 const config = require("config");
-const session = require('express-session')
+const session = require('express-session');
 const MongoDBStore = require("connect-mongodb-session")(session);
 const app = express();
 const connectDB = require("./config/db");
 const mongoURI = config.get("mongoURI");
 const User = require("./Backend/models/User");
-const IceCream = require("./Backend/models/IceCream");
+const Candy = require("./Backend/models/Candy");
 const Reservation = require("./Backend/models/Reservation");
 const isAuth = require("./Backend/middleware/is-auth");
 const isAdmin = require("./Backend/middleware/is-admin");
@@ -32,7 +32,7 @@ app.use(cookieParser());
 //----------------------------------------//
 const store = new MongoDBStore({
     uri: mongoURI,
-    collection: "Sessions",
+    collection: "MySessions",
 });
 
 app.use(
@@ -105,7 +105,7 @@ app.post("/signin",signInController.checkUser);
 //-------------------reservation--------------------------//
 const reservationController = require('./Controllers/reservationCtrl.js');
 app.get("/userMenu",isAuth,reservationController.getUserMenuPage);
-//-----------search ice cream----------------//
+//-----------search Candy----------------//
 app.get("/reservationSelect",isAuth,reservationController.getSelectionPage);
 //----------search results and start order---//
 app.post("/resSelect",reservationController.getSearchResPage);
@@ -119,7 +119,7 @@ app.get("/cart",isAuth, cartController.getCart);
 app.get("/cancelOrder",isAuth,cartController.cancelOrders);
 
 
-//---finish the order, add reservation and update ice cream and user----//
+//---finish the order, add reservation and update Candy and user----//
 app.post("/finishOrder",async(req,res)=>{
     let count =0;
     let sum = 0;
@@ -128,18 +128,18 @@ app.post("/finishOrder",async(req,res)=>{
     let name = '';
     let quantity = '';
     let tmpContent = '';
-    
+    tmpContent = req.session.selected;
+    console.log("tmpContent is: " + tmpContent);
     for (let i =0; i<selectedArr.length; i++){
-        tmpContent = req.session.selected;
         const str = selectedArr[i].split("_");
         name = str[0];
         quantity = str[1];
         const filter = {"name": name};
-        const iceCream = await IceCream.findOne(filter);
-        if (iceCream != null){
-            const newQuantity = iceCream.quantity - quantity;
+        const tmpCandy = await Candy.findOne(filter);
+        if (tmpCandy != null){
+            const newQuantity = tmpCandy.quantity - quantity;
             if (newQuantity > 0){
-                await IceCream.findOneAndUpdate(filter,{$set:{"quantity":newQuantity}},{new:true},(err,doc)=>{
+                await Candy.findOneAndUpdate(filter,{$set:{"quantity":newQuantity}},{new:true},(err,doc)=>{
                     req.session.reload(function(err){
                         if (err) throw err;
                         else{
@@ -163,12 +163,12 @@ app.post("/finishOrder",async(req,res)=>{
             const orderNumber = Math.random();
             const name = selectedArr[ind].split("_")[0].trim();
             const quantity = selectedArr[ind].split("_")[1].trim();
-            const iceCream = await IceCream.findOne({"name":name});
-            console.log("Printing the ice cream" + iceCream)
-            const pricPerIceCream = iceCream.price;
-            const tmpPrice = pricPerIceCream * quantity;
+            const tmpCandy = await Candy.findOne({"name":name});
+            console.log("Printing the candy" + tmpCandy)
+            const pricPerCandy = tmpCandy.price;
+            const tmpPrice = pricPerCandy * quantity;
             const content = tmpContent
-            console.log(content)
+            console.log("content is: " + content)
             let reservation = await Reservation.findOne({ orderNumber });
             if (reservation){
                 console.log("inside reservation statement")
@@ -184,10 +184,10 @@ app.post("/finishOrder",async(req,res)=>{
             reservationsArr.push(reservation)
             ind++;
         }
-        const ice = await IceCream.findOne({"name":name});
+        const ice = await Candy.findOne({"name":name});
         let count = ice.countOrdered;
         const newCount = count +1;
-        await IceCream.findOneAndUpdate({"name":name},{$set:{"countOrdered": newCount }},{new:true},(err,doc)=>{
+        await Candy.findOneAndUpdate({"name":name},{$set:{"countOrdered": newCount }},{new:true},(err,doc)=>{
             
         });
         await User.findOne({"email":req.session.email},function(err,doc){
@@ -220,16 +220,17 @@ app.post("/finishOrder",async(req,res)=>{
                         if (err) throw err;
                     });
                 }else {
-                    console.log("9 error")
-                    doc.listOfOrders.set(name,1);
-                    doc.save(function(err){
-                        if (err) throw err;
-                    })
+                    // console.log("9 error")
+                    // doc.listOfOrders.set(name,1);
+                    // doc.save(function(err){
+                    //     if (err) throw err;
+                    // })
                 }
             }
         });
         reservationsArr.forEach(async (reservationData) => {
             const reservation = new Reservation(reservationData); // Create a new Reservation instance
+            console.log('res is: ' + reservation);
             await reservation.save(); // Save the reservation to the database
         });
         res.clearCookie("myCookie");
@@ -242,7 +243,7 @@ app.post("/finishOrder",async(req,res)=>{
                 req.session.save();
             }
         });
-        res.redirect("/wrongQuantity");
+        
     }
 
 });
@@ -250,27 +251,31 @@ app.post("/finishOrder",async(req,res)=>{
 const profileController = require('./Controllers/profileCtrl.js');
 app.get("/profile",isAuth,profileController.getProfile);
 
-//--------------------Most Recommended Ice Cream For User from mongodb------//
-app.get("/recommendedIceCream",profileController.recommendedProducts);
+//--------------------Most Recommended Candy For User from mongodb------//
+app.get("/recommendedCandy",profileController.recommendedProducts);
 
 //--------------------Reseting cookies--------------------------------//
 app.post('/resetCookie', (req, res) => {
-    isFlag = false;
+        // reset the cookies on the server side
+        res.clearCookie('myCookie');
+        req.session.selected = 'nothing yet';
+        res.status(200).send('Cookie reset successfully');
+        console.error('reset cookie!!');
 });
 
-//--------------------selected ice cream json--------------------------------//
-app.get("/selectedIceCreams",async (req,res)=>{
+//--------------------selected Candy json--------------------------------//
+app.get("/selectedCandys",async (req,res)=>{
     let arr;
     const cartArr = [];
     let candyName = '';
       
     if(req.cookies.myCookie != undefined){arr = req.cookies.myCookie.split(",");}
+    else if(req.session.selected == 'nothing yet'){isFlag = false;}
     else{arr = req.session.selected.split(",");}
-    console.log("selectedIceCreamsCookie " + req.cookies.myCookie);
+    console.log("selectedCandysCookie " + req.cookies.myCookie);
     console.log("arr is: "+arr)
 
     if (!isFlag) {
-        res.clearCookie('myCookie');
         arr = 'nothing yet';
         console.log("Session reset detected");
         isFlag = true;
@@ -281,7 +286,7 @@ app.get("/selectedIceCreams",async (req,res)=>{
         }
         candyName = arr[i].split('_')[0];
         quantity = arr[i].split('_')[1];
-        const candy = await IceCream.findOne({"name":candyName});
+        const candy = await Candy.findOne({"name":candyName});
         if(candy){
             const cartData = {
                 name: candyName,
@@ -301,44 +306,44 @@ app.get("/selectedIceCreams",async (req,res)=>{
 const adminRoutes = require('./Controllers/adminRoutesCtrl.js');
 //------------------------users list-------------------------------//
 app.get("/adminMenu",isAdmin,adminRoutes.getAdminMenu);
-//------------------------ice cream admin's options----------------//
-app.get("/adminMenu/iceCreams",isAdmin,adminRoutes.getAdminCandyzMenu);
-//--------------------------search ice cream results--------------//
+//------------------------candy admin's options----------------//
+app.get("/adminMenu/Candys",isAdmin,adminRoutes.getAdminCandyzMenu);
+//--------------------------search candy results--------------//
 app.get("/searchResults",adminRoutes.getAdminSearchResults);
 
 
 const adminCandyzController = require('./Controllers/adminCandyzCtrl.js');
-//---------------------add ice cream-------------------------------//
-app.post('/addIceCream', adminCandyzController.addCandy);
-//---------------------------update ice cream---------------------//
-app.post("/updateIceCream",adminCandyzController.updateCandy);
-//---------------------------delete ice cream---------------------//
-app.post("/deleteIceCream",adminCandyzController.deleteCandy);
+//---------------------add candy-------------------------------//
+app.post('/addCandy', adminCandyzController.addCandy);
+//---------------------------update candy---------------------//
+app.post("/updateCandy",adminCandyzController.updateCandy);
+//---------------------------delete candy---------------------//
+app.post("/deleteCandy",adminCandyzController.deleteCandy);
 
 
-//--------------------------Gelateria admin's Menu----------------//
-app.get("/adminMenu/gelaterias",isAdmin,adminRoutes.getAdminShopsMenu);
+//--------------------------Shops admin's Menu----------------//
+app.get("/adminMenu/Shops",isAdmin,adminRoutes.getAdminShopsMenu);
 const adminShopsController = require('./Controllers/adminShopsCtrl.js')
-//--------------------------add gelateria--------------------------//
-app.post("/addGelateria",adminShopsController.addShop);
-//-----------------------------update photo url gelateria--------------//
-app.post("/updateGelateria",adminShopsController.updateShop);
-//--------------------------delete gelateria by address---------------------//
-app.post("/deleteGelateria",adminShopsController.deleteShop);
-//---------------------------all gelaterias from mongodb-------------------------//
-app.get("/showGelaterias",adminShopsController.showShops);
+//--------------------------add Shops--------------------------//
+app.post("/addShops",adminShopsController.addShops);
+//-----------------------------update photo url Shops--------------//
+app.post("/updateShops",adminShopsController.updateShops);
+//--------------------------delete Shops by address---------------------//
+app.post("/deleteShops",adminShopsController.deleteShops);
+//---------------------------all Shops from mongodb-------------------------//
+app.get("/showShops",adminShopsController.showShops);
 //------------------------all users from mongodb---------------------------------//
 app.get("/showData",async(req,res)=>{
     const all = await User.find({});
     res.json(all);
 })
-//-----------------------all ice creams from mongodb-------------//
-app.get("/adminMenu/showIceCreamsList",adminCandyzController.showCandyzList);
-//-----------------------all ice creams sorted by countOrdered------------//
-app.get("/adminMenu/showMostWantedIceCream",adminCandyzController.showMostWantedCandyz);
-//-----------------------all ice creams sorted by price------------/
-app.get("/adminMenu/showMaxPriceIceCream",adminCandyzController.showMaxPriceCandyz);
-app.get("/adminMenu/showMinPriceIceCream",adminCandyzController.showMinPriceCandyz);
+//-----------------------all candys from mongodb-------------//
+app.get("/adminMenu/showCandysList",adminCandyzController.showCandyzList);
+//-----------------------all candys sorted by countOrdered------------//
+app.get("/adminMenu/showMostWantedCandy",adminCandyzController.showMostWantedCandyz);
+//-----------------------all candys sorted by price------------/
+app.get("/adminMenu/showMaxPriceCandy",adminCandyzController.showMaxPriceCandyz);
+app.get("/adminMenu/showMinPriceCandy",adminCandyzController.showMinPriceCandyz);
 //------------------------------all reservations--------------------//
 app.get("/adminMenu/showReservations",async(req,res)=>{
     const all = await Reservation.find({});
@@ -364,6 +369,9 @@ app.get("/adminReminder",function(req,res){
 app.get("/wrongQuantity",function(req,res){
     res.sendFile(__dirname + "/View/wrongQuantity.html");
 });
+app.get("/wrongProduct",function(req,res){
+    res.sendFile(__dirname + "/View/wrongProduct.html");
+});
 //-----------------------------profile json--------------------------//
 app.get("/profileInfo",profileController.profileInfo);
 //------------------------------change password----------------------//
@@ -377,11 +385,11 @@ app.get("/adminMenu/Stats",adminRoutes.getAdminStats);
 //Grouping by to statsAdmin.html charts
 app.get("/flavorsPie1",async(req,res)=>{
     let toSend = [];
-    const total = await IceCream.aggregate([
+    const total = await Candy.aggregate([
         {$group:{_id: "all" , count:{$sum:"$countOrdered"}}}
     ])
     toSend.push(total)
-    const doc = await IceCream.aggregate([
+    const doc = await Candy.aggregate([
         {$group:{_id:"$flavor", count:{$sum: "$countOrdered" }}}
     ])
     toSend.push(doc);
@@ -402,9 +410,9 @@ app.get("/googleMaps",(req,res)=>{
 app.get("/googleMapsUser",(req,res)=>{
     res.sendFile(__dirname + "/View/googleMapsUser.html");
 })
-//---------------------------all gelaterias--------------------------//
+//---------------------------all Candyz--------------------------//
 
-app.get("/showGel",adminShopsController.showShops);
+
 
 ///////////////////////////////////////////////////////////////////////
 server.listen(PORT,console.log(`port is running on port ${PORT}...`));

@@ -5,7 +5,7 @@ function getAdminMenu(req,res){
     res.sendFile(path.join(__dirname, '..', 'View', 'adminMenu.html'));
 }
 function getAdminCandyzMenu(req,res){
-    res.sendFile(path.join(__dirname, '..', 'View', 'adminIceCreamsMenu.html'));
+    res.sendFile(path.join(__dirname, '..', 'View', 'adminCandysMenu.html'));
 }
 
 function getAdminSearchResults(req,res){
@@ -17,7 +17,7 @@ function getAdminStats(req,res){
 }
 
 function getAdminShopsMenu(req,res){
-    res.sendFile(path.join(__dirname, '..', 'View', 'admiGelateriasMenu.html'));
+    res.sendFile(path.join(__dirname, '..', 'View', 'adminShopsMenu.html'));
 }
 
 module.exports = {getAdminMenu,getAdminCandyzMenu,getAdminSearchResults,getAdminStats,getAdminShopsMenu};

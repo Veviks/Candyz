@@ -86,7 +86,7 @@
         let center = [];
         // This function is the callback function for the Google Maps API. When the Google Maps API is initialized, it calls this function
             function initMap() {
-            $.get('/showGel',(data,status)=>{
+            $.get('/showShops',(data,status)=>{
             for (let i=0; i<data.length; i++){
                 const item = {
                     lat: data[i].latitude,

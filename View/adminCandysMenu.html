@@ -44,8 +44,8 @@
         <nav class="navbar">
             <nav class="navbar">
                 <a href="/adminMenu">Menu</a>
-                <a href="/adminMenu/iceCreams">Candyz Menu</a>
-                <a href="/adminMenu/gelaterias">Candyz Shops</a>
+                <a href="/adminMenu/Candys">Candyz Menu</a>
+                <a href="/adminMenu/Shops">Candyz Shops</a>
                 <a href="/adminMenu/Stats">Stats Menu</a>
                 <a href="/logout">Log-Out</a>
         </nav>
@@ -54,8 +54,8 @@
     </section>
     <section>
         <h1 class="heading">Candyz Menu</h1>
-        <div id="iceCreams1" class="box-container" style="visibility: hidden;">
-            <table id="iceCreamsTable1" style="width:100%; text-align: center;" >
+        <div id="Candys1" class="box-container" style="visibility: hidden;">
+            <table id="CandysTable1" style="width:100%; text-align: center;" >
                 <tr>
                     <th>Name</th>
                     <th>Flavor</th>
@@ -69,10 +69,11 @@
     </section>
     <section class="sign" id="sign">
         <h1 class="heading">Add Candy</h1>
-        <form action="/addIceCream" method="POST">
+        <form action="/addCandy" method="POST">
             <div class="box-container">
                 <div class="box">
                     <div class="inputBox">
+                        <div id="nameAlert" class="alert" style="display: none;">Please enter a name.</div>
                         <span>name</span>
                         <input type="text" name="name"  placeholder="enter name" />
                     </div>
@@ -137,12 +138,12 @@
     </section>
     <section class="sign" id="sign">
         <h1 class="heading">Update Candy</h1>
-        <form action="/updateIceCream" method="POST">
+        <form action="/updateCandy" method="POST">
             <div class="box-container">
                 <div class="box">
                 <div class="inputBox">
                     <span>Ice Cream Name To Update</span>
-                    <input type="text" name="iceCreamName" placeholder="enter name" />
+                    <input type="text" name="CandyName" placeholder="enter name" />
                 </div>
                 <div class="inputBox">
                     <span>Update -</span>
@@ -160,19 +161,19 @@
     
     <section class="sign" id="sign">
         <h1 class="heading">Delete Candy</h1>
-        <form action="/deleteIceCream" method="POST">
+        <form action="/deleteCandy" method="POST">
             <div class="box-container">
                 <div class="box">
                 <div class="inputBox">
                     <span>Ice Cream Name<span>
-                    <input type="text" name="iceCreamName" placeholder="enter name" />
+                    <input type="text" name="CandyName" placeholder="enter name" />
                 </div>
                 </form>
             <input type="submit" value="Delete" class="btn"/>        
     </section>
     <script>
-        $("#iceCreams1").css('visibility','visible');
-	    $.get('/adminMenu/showIceCreamsList',function(data,status){
+        $("#Candys1").css('visibility','visible');
+	    $.get('/adminMenu/showCandysList',function(data,status){
 		for (let i=0; i< data.length; i++){
 			var row = "<tr>"
 					+"<td>" + data[i].name + "</td>"
@@ -182,9 +183,22 @@
 					+"<td><img style='width:130px'; src='" + data[i].photoURL + "';></td>"
 					+"<td>" + data[i].countOrdered + "</td>" +
 					"</tr>";
-			$("#iceCreamsTable1").append(row);
+			$("#CandysTable1").append(row);
 		}
 	});
+    </script>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const nameInput = document.querySelector('input[name="name"]');
+            const nameAlert = document.getElementById('nameAlert');
+    
+            if (!nameInput.value) {
+                nameAlert.style.display = 'block';
+                event.preventDefault(); // Prevent the form from submitting
+            } else {
+                nameAlert.style.display = 'none';
+            }
+        });
     </script>
     <!-- footer -->
 

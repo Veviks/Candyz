@@ -1,45 +1,49 @@
-const Gelateria = require('../Backend/models/Gelateria');
-async function addShop(req,res){
+const Shop = require('../Backend/models/Shops');
+async function addShops(req,res){
     const address = req.body.address;
+    if(!address){
+        return res.redirect("/adminMenu/Shops");
+    }
     const latitude = req.body.lat;
     const longitude = req.body.lng;
     const photoURL = req.body.photoURL;
     
-    let gelateria = await Gelateria.findOne({address});
-    if (gelateria){
+    let tmpShop = await Shop.findOne({address});
+    if (tmpShop){
         console.log("Candys shop already in data")
-        res.redirect("/adminMenu/gelaterias");
+        res.redirect("/adminMenu/Shops");
     }else{
-        gelateria = new Gelateria({
+        tmpShop = new Shop({
             address,
-            latitude,
-            longitude,
+            latitude: latitude || 0,
+            longitude: longitude || 0,
             photoURL
         });
-        await gelateria.save();
-        res.redirect("/adminMenu/gelaterias");
+        await tmpShop.save();
+        res.redirect("/adminMenu/Shops");
     }
 }
 
-async function updateShop(req,res){
+async function updateShops(req,res){
     const address = req.body.address;
     const url = req.body.url;
-    await Gelateria.findOneAndUpdate({"address":address},{$set:{"photoURL": url}},{new:true},(err,doc)=>{
-        res.redirect("/adminMenu/gelaterias");
+    await Shop.findOneAndUpdate({"address":address},{$set:{"photoURL": url}},{new:true},(err,doc)=>{
+        res.redirect("/adminMenu/Shops");
     });
 }
 
-async function deleteShop(req,res){
-    const address = req.body.address;
-    await Gelateria.findOneAndDelete({"address": address});
+async function deleteShops(req,res){
+    const address = req.body.address.trim();
+    console.log(address);
+    await Shop.findOneAndDelete({"address": address});
 }
 
 async function showShops(req,res){
-    const doc = await Gelateria.find({});
+    const doc = await Shop.find({});
     res.json(doc);
 }
 
 //-------------show Data-----------------
 
 
-module.exports = {addShop,updateShop,deleteShop,showShops};
+module.exports = {addShops,updateShops,deleteShops,showShops};
