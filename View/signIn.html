@@ -37,23 +37,50 @@
 		</section>
 		<section class="sign" id="sign">
 			<h1 class="heading">sign in</h1>
-			<form action="/signin" method="post">
+			<form action="/signin" method="post" id="signinForm">
 				<div class="box-container">
 					<div class="box">
 						<div class="inputBox">
 							<span>email</span>
-							<input type="text" name="email" placeholder="enter your email" />
+							<input type="text" name="email" id="emailInput" placeholder="enter your email" />
+							<div id="emailAlert" class="alert" style="display: none; color: red; font-size: larger;">No such user exists</div>
 						</div>
-
 						<div class="inputBox">
 							<span>password</span>
-							<input type="password" name="password" placeholder="enter your password" />
+							<input type="password" name="password" id="passwordInput" placeholder="enter your password" />
+							<div id="passwordAlert" class="alert" style="display: none; color: red; font-size: larger;">Invalid password</div>
 						</div>
 					</div>
 				</div>
 				<input type="submit" value="sign in" class="btn" />
 			</form>
+		
+			<script>
+				document.getElementById('signinForm').addEventListener('submit', async function(event) {
+					const emailInput = document.getElementById('emailInput');
+					const passwordInput = document.getElementById('passwordInput');
+					const emailAlert = document.getElementById('emailAlert');
+					const passwordAlert = document.getElementById('passwordAlert');
+		
+					emailAlert.style.display = 'none';
+					passwordAlert.style.display = 'none';
+		
+					if (!emailInput.value || !passwordInput.value) {
+						if (!emailInput.value) {
+							emailAlert.style.display = 'block';
+						}
+						if (!passwordInput.value) {
+							passwordAlert.style.display = 'block';
+						}
+						event.preventDefault(); // Prevent the form from submitting
+					} else {
+						// Continue with form submission
+					}
+				});
+			</script>
 		</section>
+		
+	
 		<!-- footer -->
 
 		<section class="footer">
