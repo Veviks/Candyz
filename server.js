@@ -356,22 +356,7 @@ app.get("/logout", (req,res)=>{
         res.redirect("/");
     });
 });
-//----------------------------------Blocked Pages------------------//
-app.get("/loginReminder",function(req,res){
-    res.sendFile(__dirname+ "/View/loginReminder.html");
-});
-app.get("/guestReminder",isAuth,function(req,res){
-    res.sendFile(__dirname+ "/View/guestReminder.html");
-});
-app.get("/adminReminder",function(req,res){
-    res.sendFile(__dirname   + "/View/adminReminder.html");
-});
-app.get("/wrongQuantity",function(req,res){
-    res.sendFile(__dirname + "/View/wrongQuantity.html");
-});
-app.get("/wrongProduct",function(req,res){
-    res.sendFile(__dirname + "/View/wrongProduct.html");
-});
+
 //-----------------------------profile json--------------------------//
 app.get("/profileInfo",profileController.profileInfo);
 //------------------------------change password----------------------//
@@ -379,22 +364,7 @@ app.get("/changePassword",isAuth,profileController.getChangePwPage);
 app.post("/changePassword",profileController.changePw);
 //------------------------flavors ordered----------------------------//
 
-//-----------------------------stats admin's menu----------------//
-app.get("/adminMenu/Stats",adminRoutes.getAdminStats);
 
-//Grouping by to statsAdmin.html charts
-app.get("/flavorsPie1",async(req,res)=>{
-    let toSend = [];
-    const total = await Candy.aggregate([
-        {$group:{_id: "all" , count:{$sum:"$countOrdered"}}}
-    ])
-    toSend.push(total)
-    const doc = await Candy.aggregate([
-        {$group:{_id:"$flavor", count:{$sum: "$countOrdered" }}}
-    ])
-    toSend.push(doc);
-    res.json(toSend);
-})
 //---------------------------Reservations Per Date------------------//
 //Grouping by to statsAdmin.html charts
 app.get("/resPerDate",async(req,res)=>{
