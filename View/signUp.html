@@ -35,42 +35,30 @@
 		<section class="sign" id="sign">
 			<h1 class="heading">sign up</h1>
 			<form action="/signup" method="POST">
-				
 				<div class="box-container">
 					<div class="box">
-						<!-- <div class="inputBox">
-							<span>Full-Name</span>
-							<input type="text" required name="fullname" id="signUpFullName"  placeholder="enter your full-name" />
-						</div> -->
+						<div id="errorMessages" class="alert" style="display: none; color: red; font-size: medium; margin-top: 5px; ">
+							User with this email already exists!
+						</div>
 						<div class="inputBox">
 							<span>Full-Name</span>
 							<input type="text"  name="fullname" id="signUpFullName" placeholder="enter your full-name" />
-							<div id="fullnameAlert" class="alert" style="display: none; color: red; font-size: larger; margin-top: 5px;">Please enter a valid full name.</div>
+							<div id="fullnameAlert" class="alert" style="display: none; color: red; font-size: medium; margin-top: 5px;">Please enter a valid full name.</div>
 						</div>
-					
-						<!-- <div class="inputBox">
-							<span>email</span>
-							<input type="email" required name="email" id="signUpEmail" required placeholder="enter your email" />
-						</div> -->
 						<div class="inputBox">
 							<span>email</span>
 							<input type="email" name="email" id="signUpEmail"  placeholder="enter your email" />
-							<div id="emailAlert" class="alert" style="display: none; color: red; font-size: larger ">Please enter a valid email address.</div>
+							<div id="emailAlert" class="alert" style="display: none; color: red; font-size: medium; margin-top: 5px;">Please enter a valid email address.</div>
 						</div>
-						<!-- <div class="inputBox">
-							<span>password</span>
-							<input type="password" id="passwordSignUp" name="password" placeholder="enter your password" />
-						</div> -->
 						<div class="inputBox">
 							<span>password</span>
 							<input type="password" id="passwordSignUp" name="password" placeholder="enter your password" />
-							<div id="passwordAlert" class="alert"  style="display: none; color: red; font-size: larger " >Please enter a valid password (6-12 characters).</div>
+							<div id="passwordAlert" class="alert"  style="display: none; color: red; font-size: medium; margin-top: 5px;">Please enter a valid password (6-12 characters).</div>
 						</div>
 					</div>
 				</div>
 				<input type="submit" value="sign up" class="btn"/>
 			</form>
-			<div id="errorMessages"></div>
 			<script>
 				document.querySelector('form').addEventListener('submit', function(event) {
 					const fullnameInput = document.querySelector('input[name="fullname"]');
@@ -78,12 +66,32 @@
 			
 					if (!/^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/.test(fullnameInput.value)) {
 						fullnameAlert.style.display = 'block';
-						event.preventDefault(); // Prevent the form from submitting
+						
 					} else {
 						fullnameAlert.style.display = 'none';
 					}
 				});
 			</script>
+			<script>
+				document.addEventListener("DOMContentLoaded", () => {
+					const urlParams = new URLSearchParams(window.location.search);
+					const error = urlParams.get('error');
+					const errorMessages = document.getElementById('errorMessages');
+					if (error) {
+						const errorMessage = JSON.parse(decodeURIComponent(error)).text;
+						errorMessages.textContent = errorMessage;
+						errorMessages.style.display = 'block';
+						setTimeout(() => {
+								errorMessages.style.display = 'none';
+							}, 2000);
+					} else {
+						if (!window.location.search.includes('error=')) {
+							errorMessages.style.display = 'none';
+						}
+					}
+				});
+			</script>
+	
 			<script>
 				document.querySelector('form').addEventListener('submit', function(event) {
 					const emailInput = document.querySelector('input[name="email"]');
@@ -91,7 +99,7 @@
 			
 					if (!emailInput.value.includes("@") || !emailInput.value.includes(".")) {
 						emailAlert.style.display = 'block';
-						event.preventDefault(); // Prevent the form from submitting
+						
 					} else {
 						emailAlert.style.display = 'none';
 					}

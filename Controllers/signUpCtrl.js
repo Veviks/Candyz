@@ -11,12 +11,15 @@ async function setNewUsser(req,res){
     const fullname = req.body.fullname;
     const email = req.body.email;
     const password = req.body.password;
-    console.log(email)
+    console.log("email is: " + email);
+    console.log("name is: " + fullname);
+    console.log("PW is: " + password);
     
     let user = await User.findOne({ email });
-    if (user){
-        console.log("already exsit -> sign in")
-        return res.redirect("email-exists.html"); // Redirect to the email-exists page            
+    if (user) {
+        console.log("already exists -> sign in");
+        const errorResponse = { text: "User already exists" };
+        return res.redirect(`/signup?error=${encodeURIComponent(JSON.stringify(errorResponse))}`);
     }
     if (/^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/.test(fullname) && fullname.includes(" ") && email.includes("@") && email.includes(".") && password.length >= 6 && password.length <= 12 ){
         const hasdPsw = await bcrypt.hash(password, 12);

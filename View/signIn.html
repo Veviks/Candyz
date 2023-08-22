@@ -40,15 +40,18 @@
 			<form action="/signin" method="POST" id="signinForm">
 				<div class="box-container">
 					<div class="box">
+						<div id="errorMessages" class="alert" style="display: none; color: red; font-size: medium; margin-top: 5px; ">
+							alert text
+						</div>
 						<div class="inputBox">
 							<span>email</span>
 							<input type="email" name="email" id="emailInput" placeholder="enter your email" />
-							<div id="emailAlert" class="alert" style="display: none; color: red; font-size: larger;">No such user exists</div>
+							<div id="emailAlert" class="alert" style="display: none; color: red; font-size: medium; margin-top: 5px; ">No such user exists</div>
 						</div>
 						<div class="inputBox">
 							<span>password</span>
 							<input type="password" name="password" id="passwordInput" placeholder="enter your password" />
-							<div id="passwordAlert" class="alert" style="display: none; color: red; font-size: larger;">Invalid password</div>
+							<div id="passwordAlert" class="alert" style="display: none; color: red; font-size: medium; margin-top: 5px; ">Invalid password</div>
 						</div>
 					</div>
 				</div>
@@ -77,6 +80,25 @@
 					}
 				});
 			</script>
+				<script>
+					document.addEventListener("DOMContentLoaded", () => {
+						const urlParams = new URLSearchParams(window.location.search);
+						const error = urlParams.get('error');
+						const errorMessages = document.getElementById('errorMessages');
+						if (error) {
+							const errorMessage = JSON.parse(decodeURIComponent(error)).text;
+							errorMessages.textContent = errorMessage;
+							errorMessages.style.display = 'block';
+							setTimeout(() => {
+								errorMessages.style.display = 'none';
+							}, 2000);
+						} else {
+							if (!window.location.search.includes('error=')) {
+								errorMessages.style.display = 'none';
+							}
+						}
+					});
+				</script>
 		</section>
 
 		

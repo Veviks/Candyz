@@ -11,7 +11,8 @@ async function checkUser(req,res){
     const user = await User.findOne({email});
     if (!user){
         console.log("No such user");
-        return res.redirect("/signin");
+        const errorResponse = { text: "User is not exists" };
+        return res.redirect(`/signin?error=${encodeURIComponent(JSON.stringify(errorResponse))}`);
     }
     const isMatch = await bcrypt.compare(password,user.password);
     if (!isMatch){
