@@ -34,4 +34,25 @@ function cancelOrders(req,res){
     res.clearCookie("myCookie");
     res.redirect("/userMenu");
 }
-module.exports = {getCart,cancelOrders};
+
+
+function displayOrderDetails(req,res){
+    res.sendFile(path.join(__dirname, '..', 'View', 'orderDetails.html'));
+}
+
+function orderDetails(req,res){
+    console.log("display credit data")
+}
+
+function resetCookies(req,res){
+     // reset the cookies on the server side
+     res.clearCookie('myCookie');
+     req.session.selected = 'nothing yet';
+     res.status(200).send('Cookie reset successfully');
+     console.error('reset cookie!!');
+}
+
+
+
+
+module.exports = {getCart,cancelOrders,displayOrderDetails,orderDetails,resetCookies};

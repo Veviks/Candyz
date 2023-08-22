@@ -108,6 +108,7 @@ section {
 	margin-top: 4rem;
 }
 
+
 .btn {
 	margin-top: 1rem;
 	display: inline-block;
@@ -126,6 +127,15 @@ section {
 .btn1 {
 	align-items: center;
 }
+
+/* .alert .alertID {
+	color: #d8000c;
+	padding: 5px;
+	font-size: 12px;
+	display: none;
+} */
+  
+
 /* header */
 
 .header {
@@ -478,6 +488,19 @@ section {
 
 .footer .credit span {
 	color: var(--main-color);
+}
+
+.card-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.card-logo {
+    width: 50px; /* Adjust the width as needed */
+    height: auto; /* Automatically adjust height */
+    margin: 0 10px; /* Add some spacing between logos */
 }
 
 /* media queries */

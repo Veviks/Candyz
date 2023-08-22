@@ -18,7 +18,7 @@ async function getSearchResPage(req, res) {
         console.log(errorMessage);
         setTimeout(() => {
             return res.redirect("/reservationSelect?options=All&name=&flavor=&quantity=&price=");
-        },2000);
+        },1500);
         return;
     }
 
@@ -29,7 +29,7 @@ async function getSearchResPage(req, res) {
         console.log(errorMessage);
         setTimeout(() => {
             return res.redirect("/reservationSelect?options=All&name=&flavor=&quantity=&price=");
-        },2000);
+        },1500);
         return;
     }
     req.session.reload(function(err){
@@ -54,9 +54,12 @@ async function fetchData(req,res){
         const tmpName = req.query.tmpName;
         try {
             const productName = await Candy.findOne({ "name": tmpName });
+            console.log("name as req.query: " + tmpName);
             if (productName) {   
+                
                 res.json({ quantity: productName.quantity });
             } else {
+                console.log("this is the name: " + productName);
                 res.json({ error: 'Product not found' });
             }
         } catch (error) {

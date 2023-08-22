@@ -36,6 +36,7 @@ async function deleteShops(req,res){
     const address = req.body.address.trim();
     console.log(address);
     await Shop.findOneAndDelete({"address": address});
+    res.redirect("/adminMenu/Shops");
 }
 
 async function showShops(req,res){

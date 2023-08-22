@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Order data</title>
+    <!-- font awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <script src="https://kit.fontawesome.com/51237677f5.js" crossorigin="anonymous"></script>
+
+    <!-- swiper -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/swiper@7/swiper-bundle.min.css"
+    />
+    <!-- lightgallery -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery-js/1.4.0/css/lightgallery.min.css"
+    />
+    <!-- custom css -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script src="js/script.js"></script>
+</head>
+<body>
+    <section class="header">
+        <a href="userMenu.html" class="logo">
+            <i class="fa-solid fa-candy-cane fa-flip-horizontal" style="color: #ffffff;"></i> Candyz
+        </a>
+
+        <nav class="navbar">  
+            <a id="cancel" href="/cancelOrder">Cancel Order</a>       
+        </nav>
+
+        <div id="menu-btn" class="fas fa-bars"></div>
+    </section>
+    <section id="sec2" style="text-align: center; align-items: center;">
+    </section>
+    <section class="sign" id="sign">
+        <form action="/finishOrder" method="POST">
+             <div class="box-container">
+                    <div class="box">
+                            
+                            <!-- Full Name -->
+                            <div class="inputBox">
+                                <span>Full Name as on Credit Card</span>
+                                <input type="text" required name="FullName" placeholder="Enter full name" />
+                            </div>
+                            
+                            <!-- Credit Number -->
+                            <div class="inputBox">
+                                <span>Credit Number</span>
+                                <input type="text" required name="CreditNum" placeholder="Enter your credit number" maxlength="" />
+                            </div>
+                            <div class="CreditAlert" style="display: none; color: red; font-size: medium;">Invalid Credit Number</div>
+
+                            <!-- ID Number -->
+                            <div class="inputBox">
+                                <span>ID Number</span>
+                                <input type="text" required name="IDNumber" placeholder="Enter ID number" maxlength="9" />
+                            </div>
+                            <div class="IDalert" style="display: none; color: red; font-size: medium;">Invalid ID Number</div>
+            
+                            <!-- Expiry Date -->
+                            <div class="inputBox">
+                                <span>Expiry Date</span>
+                                <input type="text" required name="ExpiryDate" placeholder="MM/YY" maxlength="5" />
+                            </div>
+                            
+                            <!-- CVC Number -->
+                            <div class="inputBox">
+                                <span>CVC Number</span>
+                                <input type="text" required name="CVCNumber" placeholder="CVC" maxlength="3" />
+                            </div>
+                            
+                            <!-- Visa and Mastercard Logos -->
+                            <div class="card-logos">
+                                <img src="static/visa-logo.png" alt="Visa Logo" class="card-logo" />
+                                <img src="static/MasterCard_Logo.png" alt="Mastercard Logo" class="card-logo" />
+                                <img src="static/am_amex.png" alt="AmericanExpress Logo" class="card-logo" />
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="inputBox">
+                                <button class="btn">Place Order!</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+    </section>
+    
+     <!-- footer -->
+
+		<section class="footer">
+			<div class="icons-container">
+				<div class="icons">
+					<i class="fas fa-map"></i>
+					<h3>address</h3>
+						<p>
+							Elie Wiesel St 2, Rishon LeTsiyon,  Israel
+						</p>
+				</div>
+
+				<div class="icons">
+					<i class="fas fa-phone"></i>
+					<h3>phone</h3>
+					<p>03-333-3333</p>
+					<p>07-777-7777</p>
+				</div>
+
+				<div class="icons">
+					<i class="fas fa-clock"></i>
+					<h3>opening hours</h3>
+					<p>
+						Sunday - Thursday : 9:00 - 22:00 <br />
+						Friday: 9:00 - 11:00
+					</p>
+				</div>
+			</div>
+
+		</section>
+
+		<!-- footer -->
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const expiryDateInput = document.querySelector('input[name="ExpiryDate"]');
+                expiryDateInput.addEventListener("input", (event) => {
+                    const input = event.target;
+                    const inputValue = input.value.replace(/\D/g, ""); 
+                    
+                    if (expiryDateInput.value.length > 2) {
+                        const formattedValue = inputValue.slice(0, 2) + "/" + inputValue.slice(2);
+                        input.value = formattedValue;
+                    }
+                });
+            });
+        </script>
+       <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const creditNumInput = document.querySelector('input[name="CreditNum"]');
+            const alertElement = document.querySelector('.CreditAlert');
+            
+            creditNumInput.addEventListener("input", (event) => {
+                const input = event.target;
+                const inputValue = input.value.replace(/\s/g, ""); // Remove existing spaces
+                
+                const formattedValue = inputValue
+                    .replace(/\D/g, "") // Remove non-numeric characters
+                    .replace(/(\d{4})(?=\d)/g, "$1 ");
+                
+                input.value = formattedValue;
+                input.maxLength = inputValue.length > 16 ? inputValue.length + 3 : 19;
+                
+                if (creditNumInput.value.length < 19) {
+                    alertElement.style.display = "block"; // Display alert if length is less than 19
+                } else {
+                    alertElement.style.display = "none"; // Hide alert for all other cases
+                }
+            });
+        });
+    </script>
+         <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const idNumberInput = document.querySelector('input[name="IDNumber"]');
+                const cvcNumberInput = document.querySelector('input[name="CVCNumber"]');
+                
+                function formatInput(input, regex) {
+                    const inputValue = input.value.replace(regex, ""); 
+                    input.value = inputValue;
+                }
+                
+                idNumberInput.addEventListener("input", () => {
+                    formatInput(idNumberInput, /\D/g);
+                });
+            
+                
+                cvcNumberInput.addEventListener("input", () => {
+                    formatInput(cvcNumberInput, /\D/g);
+                });
+
+                
+              
+            });
+        </script>
+        <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    const alertElement = document.querySelector('.IDalert');
+                    const idNumberInput = document.querySelector('input[name="IDNumber"]');
+                    idNumberInput.addEventListener("input", (event) => {
+    
+                    if (idNumberInput.value.length < 9) {
+                        alertElement.style.display = "block"; 
+                    } else {
+                        alertElement.style.display = "none"; 
+                    }
+                });
+                
+            });
+        </script>
+
+</body>
+</html>

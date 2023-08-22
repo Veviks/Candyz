@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User Menu Page</title>
+    <!-- font awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <style>
+        table, th, td {
+          border:1px solid black;
+          font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+          font-size: large;
+        }
+    </style>
+        
+
+    <!-- swiper -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/swiper@7/swiper-bundle.min.css"
+    />
+    <!-- lightgallery -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery-js/1.4.0/css/lightgallery.min.css"
+    />
+    <!-- custom css -->
+    <script src="https://kit.fontawesome.com/51237677f5.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/style.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script src="js/script.js"></script>
+</head>
+<body>
+    <section class="header">
+        <a href="userMenu.html" class="logo">
+            <i class="fa-solid fa-candy-cane fa-flip-horizontal" style="color: #ffffff;"></i> Candyz
+        </a>
+
+        <nav class="navbar">
+            <a href="userMenu.html">Order</a>
+            <a href="cart.html">Cart</a>
+            <a href="changePassword.html">Change Password</a>
+            <a href="/logout">Log-Out</a>
+        
+        </nav>
+
+        <div id="menu-btn" class="fas fa-bars"></div>
+    </section>
+    <section class="order" id="order">
+        <h1 class="heading" onclick="profileInfo()">My Profile</h1>
+        <div class='card1' id="proDiv">
+            <div class='container1' id="pdivP">
+                <h1 id="profileName">
+                    <b></b>
+                </h1>
+                <p id="profileEmail"></p>
+            </div>
+        </div>
+    </section>
+    <!-- footer -->
+
+		<section class="footer">
+			<div class="icons-container">
+				<div class="icons">
+					<i class="fas fa-map"></i>
+					<h3>address</h3>
+						<p>
+							Elie Wiesel St 2, Rishon LeTsiyon,  Israel
+						</p>
+				</div>
+
+				<div class="icons">
+					<i class="fas fa-phone"></i>
+					<h3>phone</h3>
+					<p>03-333-3333</p>
+					<p>07-777-7777</p>
+				</div>
+
+				<div class="icons">
+					<i class="fas fa-clock"></i>
+					<h3>opening hours</h3>
+					<p>
+						Sunday - Thursday : 9:00 - 22:00 <br />
+						Friday: 9:00 - 11:00
+					</p>
+				</div>
+			</div>
+
+		</section>
+
+		<!-- footer -->
+    <script>
+        $(document).ready(function() {
+            $.get('/profileInfo',function(data,status){
+            $("#profileName").text(data.name);
+            $("#profileEmail").text(data.email);
+            for (let i =0; i<data.listOfOrders.length; i++){
+                    const index = i+1;
+                    const arr = data.listOfOrders[i].content.split("_");
+                    const name = arr[0].trim();
+                    const quantity = arr[1].trim();
+                    $("#pdivP").append("-------------------------");
+                    $("#pdivP").append("<p>Order Number - " + index + "</p>");
+                    $("#pdivP").append("<p>Name - " + name + " , Quantity - " + quantity +" KG</p>");
+                    $("#pdivP").append("<p>Price - " + data.listOfOrders[i].price + "$</p>");
+                    $("#pdivP").append("<p>Date - " + data.listOfOrders[i].date + "</p>");
+                }
+            });
+        }); 
+      
+    </script>
+</body>
+</html>

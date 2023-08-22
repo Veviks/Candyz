@@ -110,6 +110,8 @@ app.get("/reservationSelect",isAuth,reservationController.getSelectionPage);
 //----------search results and start order---//
 app.post("/resSelect",reservationController.getSearchResPage);
 
+app.get('/getProductQuantity', reservationController.fetchData);
+
 
 //---------------------selection result in user's cart------------------//
 const cartController = require('./Controllers/cartCtrl.js');
@@ -117,6 +119,14 @@ app.get("/cart",isAuth, cartController.getCart);
 
 //--------cancel current order and back to search options---//
 app.get("/cancelOrder",isAuth,cartController.cancelOrders);
+
+//------place your order details--------------------------//
+// app.post("/orderDetails",isAuth,cartController.orderDetails);
+
+
+app.get("/orderDetails",cartController.displayOrderDetails);
+
+
 
 
 //---finish the order, add reservation and update Candy and user----//
@@ -167,7 +177,7 @@ app.post("/finishOrder",async(req,res)=>{
             console.log("Printing the candy" + tmpCandy)
             const pricPerCandy = tmpCandy.price;
             const tmpPrice = pricPerCandy * quantity;
-            const content = tmpContent
+            const content = tmpContent;
             console.log("content is: " + content)
             let reservation = await Reservation.findOne({ orderNumber });
             if (reservation){
@@ -255,14 +265,28 @@ app.get("/profile",isAuth,profileController.getProfile);
 app.get("/recommendedCandy",profileController.recommendedProducts);
 
 //--------------------Reseting cookies--------------------------------//
-app.post('/resetCookie', (req, res) => {
-        // reset the cookies on the server side
-        res.clearCookie('myCookie');
-        req.session.selected = 'nothing yet';
-        res.status(200).send('Cookie reset successfully');
-        console.error('reset cookie!!');
-});
 
+app.post('/resetCookie', cartController.resetCookies);
+
+app.use((req, res, next) => {
+    const nameToDelete = req.body.name; // Update this based on your needs
+
+    // Update req.session.selected
+    if (req.session.selected) {
+        const items = req.session.selected.split(',');
+        const updatedItems = items.filter(item => !item.startsWith(nameToDelete));
+        req.session.selected = updatedItems.join(',');
+    }
+
+    // Update req.cookies.myCookie
+    if (req.cookies.myCookie) {
+        const items = req.cookies.myCookie.split(',');
+        const updatedItems = items.filter(item => !item.startsWith(nameToDelete));
+        res.cookie('myCookie', updatedItems.join(','), { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
+    }
+
+    next();
+});
 //--------------------selected Candy json--------------------------------//
 app.get("/selectedCandys",async (req,res)=>{
     let arr;
@@ -364,7 +388,22 @@ app.get("/changePassword",isAuth,profileController.getChangePwPage);
 app.post("/changePassword",profileController.changePw);
 //------------------------flavors ordered----------------------------//
 
+//-----------------------------stats admin's menu----------------//
+app.get("/adminMenu/Stats",adminRoutes.getAdminStats);
 
+//Grouping by to statsAdmin.html charts
+app.get("/flavorsPie1",async(req,res)=>{
+    let toSend = [];
+    const total = await Candy.aggregate([
+        {$group:{_id: "all" , count:{$sum:"$countOrdered"}}}
+    ])
+    toSend.push(total)
+    const doc = await Candy.aggregate([
+        {$group:{_id:"$flavor", count:{$sum: "$countOrdered" }}}
+    ])
+    toSend.push(doc);
+    res.json(toSend);
+})
 //---------------------------Reservations Per Date------------------//
 //Grouping by to statsAdmin.html charts
 app.get("/resPerDate",async(req,res)=>{

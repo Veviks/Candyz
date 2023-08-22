@@ -8,10 +8,15 @@ function getSignInPage(req, res) {
 
 async function checkUser(req,res){
     const {email,password} = req.body;
-    const user = await User.findOne({email,password});
+    const user = await User.findOne({email});
     if (!user){
-        console.log("No email user");
-         return res.redirect("/signin");
+        console.log("No such user");
+        return res.redirect("/signin");
+    }
+    const isMatch = await bcrypt.compare(password,user.password);
+    if (!isMatch){
+        console.log("Wrong password...");
+        return res.redirect("/signin");
     }
     req.session.selected = "nothing yet";
     req.session.isAuth = true;
