@@ -139,19 +139,19 @@ section {
 /* header */
 
 .header {
-	padding-top: 2rem;
-	padding-bottom: 2rem;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	box-shadow: var(--box-shadow);
-	position: sticky;
-	top: 0;
-	left: 0;
-	right: 0;
-	background: rgb(255, 208, 121);
-	background: rgb(167, 220, 255);
-	z-index: 1000;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--box-shadow);
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    background: rgb(21 0 80);
+    z-index: 1
 }
 
 .header .logo {
